@@ -51,8 +51,11 @@ def predict():
         return Response(render_template('result.html',data=['No items']))
       else:
         return Response(render_template('result.html',data=output))
+    else:
+      return Response(render_template('result.html',data=['please enter valid order id from test data']))   
+      
   else:
-    return Response(render_template('result.html',data=['you have enter invalid order id ,please enter valid order id from test data']))
+    return Response(render_template('result.html',data=['you have enter invalid order id']))
 
     
 
