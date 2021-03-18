@@ -32,8 +32,8 @@ def index():
 @app.route('/predict', methods=['POST'])
 def predict():
 
-  to_predict_list = [int(x) for x in request.form.values()]
-  order_id_ = to_predict_list[0]
+  to_predict_list = request.form.to_dict()
+  order_id_ = to_predict_list["Order_ID"]
   if order_id_.isnumeric():
     order_id = int(order_id_)
     if order_id in test_data2.order_id.unique():
