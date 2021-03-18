@@ -32,25 +32,27 @@ def index():
 @app.route('/predict', methods=['POST'])
 def predict():
 
-  to_predict_list = [int(x) for x in request.form.values()]
-  order_id = to_predict_list[0]
-  if order_id in test_data2.order_id.unique():
-    test = test_data2[test_data2.order_id==order_id]
-    predict = model.predict(test.drop(['order_id','product_id'],axis=1))
-    test['predict'] = predict
-    test = test[(test['predict']==1)]
-    output = []
-    for i in test.product_id:
-      if i=='None':
-        output.append('No items')
+  to_predict_list = request.form.to_dict()
+  order_id_ = to_predict_list["Order_ID"]
+  if order_id_.isnumeric():
+    order_id = int(order_id_)
+    if order_id in test_data2.order_id.unique():
+      test = test_data2[test_data2.order_id==order_id]
+      predict = model.predict(test.drop(['order_id','product_id'],axis=1))
+      test['predict'] = predict
+      test = test[(test['predict']==1)]
+      output = []
+      for i in test.product_id:
+        if i=='None':
+          output.append('No items')
+        else:
+          output.append(pro_name[i])
+      if len(output)==0:
+        return Response(render_template('result.html',data=['No items']))
       else:
-        output.append(pro_name[i])
-    if len(output)==0:
-      return Response(render_template('result.html',data=['No items']))
-    else:
-      return Response(render_template('result.html',data=output))
+        return Response(render_template('result.html',data=output))
   else:
-    return Response(render_template('result.html',data=['please enter order id from test data']))
+    return Response(render_template('result.html',data=['you have enter invalid order id ,please enter valid order id from test data']))
 
     
 
